@@ -20,8 +20,8 @@ pages = loader.load_and_split()
 
 # setup a text splitter
 text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size=250,
-    chunk_overlap=20,
+    chunk_size=500,
+    chunk_overlap=100,
     length_function=len,
 )
 
