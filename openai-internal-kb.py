@@ -13,7 +13,7 @@ from langchain.chat_models import ChatOpenAI
 
 
 #Setup Loader - in this case a PDF Loader
-loader = PyMuPDFLoader("SBP-SUSE-security-report-2021_en.pdf")
+loader = PyMuPDFLoader("suse_administration.pdf")
 
 #Load and split the pdf into pages
 pages = loader.load_and_split()
@@ -45,7 +45,7 @@ memory = ConversationBufferMemory(memory_key="chat_history", return_messages=Tru
 qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(temperature=0.5),vectordb.as_retriever(), memory=memory)
 
 #Run the question
-question = "Explain briefly about secure software supply chain.?"
+question = "Explain grouping and combining commands in Suse linux.?"
 result = qa.run(question)
 
 #print the values to the screen
