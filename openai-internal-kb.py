@@ -13,7 +13,7 @@ from langchain.chat_models import ChatOpenAI
 
 
 #Setup Loader - in this case a PDF Loader
-loader = PyMuPDFLoader("suse_administration.pdf")
+loader = PyMuPDFLoader("Salt.pdf")
 
 #Load and split the pdf into pages
 pages = loader.load_and_split()
@@ -31,9 +31,15 @@ docs = text_splitter.split_documents(pages)
 #transform to embeddings
 embeddings = OpenAIEmbeddings()
 
+# Split the documents into smaller batches
+batch_size = 5461  # Set to the maximum allowed batch size
+for i in range(0, len(docs), batch_size):
+    batch = docs[i:i + batch_size]
+    vectordb = Chroma.from_documents(batch, OpenAIEmbeddings(), persist_directory=".")
+
 #setup and store docs and embeddings into ChromaDB
-vectordb = Chroma.from_documents(docs, embedding=embeddings,
-                                 persist_directory=".")
+#vectordb = Chroma.from_documents(docs, embedding=embeddings,
+#                                 persist_directory=".")
 
 #Make the database persisten
 vectordb.persist()
@@ -45,7 +51,7 @@ memory = ConversationBufferMemory(memory_key="chat_history", return_messages=Tru
 qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(temperature=0.5),vectordb.as_retriever(), memory=memory)
 
 #Run the question
-question = "Explain grouping and combining commands in Suse linux.?"
+question = "What is the version of salt documentation release and explain about SPM.?"
 result = qa.run(question)
 
 #print the values to the screen
